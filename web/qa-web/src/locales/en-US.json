@@ -63,6 +63,34 @@
       "specialties": ["Gastritis", "Intestinal Disease", "Liver Disease"]
     }
   },
+  "patient": {
+    "auth": {
+      "title": "Patient Verification",
+      "subtitle": "Please sign in with your username and password to start a consultation",
+      "loginTab": "Sign In",
+      "registerTab": "Register",
+      "loginButton": "Sign In",
+      "registerButton": "Register and Sign In",
+      "loginSuccess": "Signed in successfully, welcome back!",
+      "registerSuccess": "Registration successful, you are now signed in",
+      "logout": "Sign Out",
+      "logoutSuccess": "Signed out",
+      "hintTitle": "Tip",
+      "hintDescription": "Please register an account before your first consultation; once registered you can submit consultation questions."
+    },
+    "portal": {
+      "welcome": "Welcome to our online consultation service"
+    },
+    "validation": {
+      "usernameRequired": "Please enter your username",
+      "usernamePattern": "Username must be 4-32 characters, letters, digits, underscores or hyphens only",
+      "passwordRequired": "Please enter your password",
+      "passwordPattern": "Password must be 8-32 characters and contain both letters and digits",
+      "nameRequired": "Please enter your name",
+      "nameMax": "Name cannot exceed 32 characters",
+      "phonePattern": "Please enter a valid phone number"
+    }
+  },
   "language": {
     "label": "Language",
     "zhCN": "中文",

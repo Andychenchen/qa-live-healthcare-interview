@@ -63,6 +63,34 @@
       "specialties": ["胃炎", "肠道疾病", "肝病"]
     }
   },
+  "patient": {
+    "auth": {
+      "title": "患者身份验证",
+      "subtitle": "请使用用户名和密码登录后开始问诊",
+      "loginTab": "登录",
+      "registerTab": "注册",
+      "loginButton": "登录",
+      "registerButton": "注册并登录",
+      "loginSuccess": "登录成功，欢迎回来!",
+      "registerSuccess": "注册成功，已为您自动登录",
+      "logout": "退出登录",
+      "logoutSuccess": "已退出登录",
+      "hintTitle": "提示",
+      "hintDescription": "首次使用请先注册账号；注册成功后即可提交问诊问题。"
+    },
+    "portal": {
+      "welcome": "欢迎使用在线问诊服务"
+    },
+    "validation": {
+      "usernameRequired": "请输入用户名",
+      "usernamePattern": "用户名需为 4-32 位，仅支持字母、数字、下划线和连字符",
+      "passwordRequired": "请输入密码",
+      "passwordPattern": "密码需为 8-32 位，且必须同时包含字母和数字",
+      "nameRequired": "请输入姓名",
+      "nameMax": "姓名不能超过 32 个字符",
+      "phonePattern": "请输入有效的手机号"
+    }
+  },
   "language": {
     "label": "语言",
     "zhCN": "中文",

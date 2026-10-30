@@ -1,0 +1,37 @@
+[
+  {
+    "id": "patient001",
+    "name": "赵明",
+    "birthday": "1985-03-15",
+    "phone": "138****1234",
+    "gender": "男"
+  },
+  {
+    "id": "patient002",
+    "name": "孙丽",
+    "birthday": "1990-07-22",
+    "phone": "139****5678",
+    "gender": "女"
+  },
+  {
+    "id": "patient003",
+    "name": "周杰",
+    "birthday": "1978-11-08",
+    "phone": "137****9012",
+    "gender": "男"
+  },
+  {
+    "id": "patient004",
+    "name": "吴芳",
+    "birthday": "1995-05-20",
+    "phone": "136****3456",
+    "gender": "女"
+  },
+  {
+    "id": "patient005",
+    "name": "郑浩",
+    "birthday": "1988-09-12",
+    "phone": "135****7890",
+    "gender": "男"
+  }
+]
