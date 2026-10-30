@@ -1,0 +1,71 @@
+{
+  "home": {
+    "hero": {
+      "title": "Professional Online Medical Consultation Platform",
+      "subtitle": "Connecting patients with professional doctors for convenient and efficient medical consultation",
+      "features": {
+        "doctorTeam": "Professional Doctor Team",
+        "onlineConsultation": "Real-time Online Consultation",
+        "privacyProtection": "Privacy & Security Protection"
+      },
+      "actions": {
+        "startConsultation": "Start Consultation",
+        "viewDoctors": "View Doctors"
+      }
+    },
+    "statistics": {
+      "totalDoctors": "Professional Doctors",
+      "totalQuestions": "Total Questions",
+      "pendingQuestions": "Pending Questions",
+      "onlineRooms": "Online Consultation Rooms"
+    },
+    "activeRooms": {
+      "title": "Open Consultation Rooms",
+      "subtitle": "The following doctors' consultation rooms are open and welcome your inquiry",
+      "online": "Online",
+      "enterRoom": "Enter Room"
+    }
+  },
+  "doctors": {
+    "doc001": {
+      "name": "Dr. Zhang Wei",
+      "title": "Chief Physician",
+      "department": "Cardiology",
+      "experience": "15 years of clinical experience",
+      "specialties": ["Hypertension", "Coronary Heart Disease", "Arrhythmia"]
+    },
+    "doc002": {
+      "name": "Dr. Li Na",
+      "title": "Associate Chief Physician",
+      "department": "Pediatrics",
+      "experience": "10 years of clinical experience",
+      "specialties": ["Children's Cold", "Child Development", "Vaccination"]
+    },
+    "doc003": {
+      "name": "Dr. Wang Qiang",
+      "title": "Attending Physician",
+      "department": "Orthopedics",
+      "experience": "8 years of clinical experience",
+      "specialties": ["Fracture", "Arthritis", "Sports Injury"]
+    },
+    "doc004": {
+      "name": "Dr. Liu Min",
+      "title": "Chief Physician",
+      "department": "Obstetrics & Gynecology",
+      "experience": "18 years of clinical experience",
+      "specialties": ["Pregnancy Care", "Gynecological Inflammation", "Postpartum Recovery"]
+    },
+    "doc005": {
+      "name": "Dr. Chen Jie",
+      "title": "Associate Chief Physician",
+      "department": "Gastroenterology",
+      "experience": "12 years of clinical experience",
+      "specialties": ["Gastritis", "Intestinal Disease", "Liver Disease"]
+    }
+  },
+  "language": {
+    "label": "Language",
+    "zhCN": "中文",
+    "enUS": "English"
+  }
+}

@@ -59,7 +59,7 @@ import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { message } from 'ant-design-vue';
 import { UserOutlined, LockOutlined } from '@ant-design/icons-vue';
-import { store } from '../store';
+import { store, doctorsError } from '../store';
 
 const router = useRouter();
 const loading = ref(false);
@@ -77,7 +77,16 @@ const rules = {
 const onFinish = async () => {
   loading.value = true;
 
-  setTimeout(() => {
+  try {
+    // 医生数据已迁移到后端，登录前需确保列表已加载（用于校验账号）
+    if (store.state.doctors.length === 0) {
+      const ok = await store.loadDoctors();
+      if (!ok) {
+        message.error(doctorsError.value || '医生数据加载失败，请稍后重试');
+        return;
+      }
+    }
+
     const doctor = store.loginDoctor(formState.username, formState.password);
 
     if (doctor) {
@@ -86,9 +95,9 @@ const onFinish = async () => {
     } else {
       message.error('用户名或密码错误');
     }
-
+  } finally {
     loading.value = false;
-  }, 500);
+  }
 };
 </script>
 

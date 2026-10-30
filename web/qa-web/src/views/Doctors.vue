@@ -6,55 +6,71 @@
     </div>
 
     <div class="doctors-container">
-      <div class="doctors-grid">
-        <a-card
-          v-for="doctor in allDoctors"
-          :key="doctor.id"
-          class="doctor-card"
-          :class="{ 'active': doctor.isActive }"
-        >
-          <div class="card-header">
-            <img :src="doctor.avatar" :alt="doctor.name" class="doctor-avatar" />
-            <a-badge
-              :status="doctor.isActive ? 'processing' : 'default'"
-              :text="doctor.isActive ? '在线' : '离线'"
-            />
-          </div>
-          <div class="card-body">
-            <h3>{{ doctor.name }}</h3>
-            <p class="doctor-title">{{ doctor.title }}</p>
-            <p class="doctor-department">{{ doctor.department }}</p>
-            <p class="doctor-experience">{{ doctor.experience }}</p>
-            <div class="doctor-specialties">
-              <a-tag v-for="specialty in doctor.specialties" :key="specialty" color="blue">
-                {{ specialty }}
-              </a-tag>
+      <AsyncState
+        :loading="doctorsLoading"
+        :error="doctorsError"
+        loading-text="正在加载医生列表..."
+        @retry="retryLoad"
+      >
+        <div class="doctors-grid">
+          <a-card
+            v-for="doctor in allDoctors"
+            :key="doctor.id"
+            class="doctor-card"
+            :class="{ 'active': doctor.isActive }"
+          >
+            <div class="card-header">
+              <img :src="doctor.avatar" :alt="doctor.name" class="doctor-avatar" />
+              <a-badge
+                :status="doctor.isActive ? 'processing' : 'default'"
+                :text="doctor.isActive ? '在线' : '离线'"
+              />
             </div>
-          </div>
-          <div class="card-footer">
-            <a-button
-              type="primary"
-              block
-              :disabled="!doctor.isActive"
-              @click="goToConsultation(doctor)"
-            >
-              {{ doctor.isActive ? '进入诊室' : '暂未开放' }}
-            </a-button>
-          </div>
-        </a-card>
-      </div>
+            <div class="card-body">
+              <h3>{{ doctor.name }}</h3>
+              <p class="doctor-title">{{ doctor.title }}</p>
+              <p class="doctor-department">{{ doctor.department }}</p>
+              <p class="doctor-experience">{{ doctor.experience }}</p>
+              <div class="doctor-specialties">
+                <a-tag v-for="specialty in doctor.specialties" :key="specialty" color="blue">
+                  {{ specialty }}
+                </a-tag>
+              </div>
+            </div>
+            <div class="card-footer">
+              <a-button
+                type="primary"
+                block
+                :disabled="!doctor.isActive"
+                @click="goToConsultation(doctor)"
+              >
+                {{ doctor.isActive ? '进入诊室' : '暂未开放' }}
+              </a-button>
+            </div>
+          </a-card>
+        </div>
+      </AsyncState>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { store, Doctor } from '../store';
+import { store, doctorsLoading, doctorsError, type Doctor } from '../store';
+import AsyncState from '../components/AsyncState.vue';
 
 const router = useRouter();
 
 const allDoctors = computed(() => store.state.doctors);
+
+const retryLoad = async () => {
+  await store.loadDoctors(true);
+};
+
+onMounted(() => {
+  store.loadDoctors();
+});
 
 const goToConsultation = (doctor: Doctor) => {
   router.push(`/consultation/${doctor.username}`);

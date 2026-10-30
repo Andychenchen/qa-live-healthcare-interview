@@ -210,6 +210,9 @@ const availableDoctors = computed(() => {
 });
 
 onMounted(() => {
+  // 医生数据来自后端，需先加载
+  store.loadDoctors();
+
   const doctorUsername = route.params.doctorUsername as string;
   if (doctorUsername) {
     const doctor = store.getDoctorByUsername(doctorUsername);

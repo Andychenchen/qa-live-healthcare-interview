@@ -1,0 +1,71 @@
+{
+  "home": {
+    "hero": {
+      "title": "专业在线医疗问诊平台",
+      "subtitle": "连接专业医生与患者,提供便捷、高效的医疗咨询服务",
+      "features": {
+        "doctorTeam": "专业医生团队",
+        "onlineConsultation": "实时在线问诊",
+        "privacyProtection": "隐私安全保护"
+      },
+      "actions": {
+        "startConsultation": "立即问诊",
+        "viewDoctors": "查看医生"
+      }
+    },
+    "statistics": {
+      "totalDoctors": "专业医生",
+      "totalQuestions": "问题总数",
+      "pendingQuestions": "待响应问题",
+      "onlineRooms": "在线诊室"
+    },
+    "activeRooms": {
+      "title": "开放诊室",
+      "subtitle": "以下医生诊室正在开放,欢迎咨询",
+      "online": "在线",
+      "enterRoom": "进入诊室"
+    }
+  },
+  "doctors": {
+    "doc001": {
+      "name": "张伟医生",
+      "title": "主任医师",
+      "department": "心内科",
+      "experience": "15年临床经验",
+      "specialties": ["高血压", "冠心病", "心律失常"]
+    },
+    "doc002": {
+      "name": "李娜医生",
+      "title": "副主任医师",
+      "department": "儿科",
+      "experience": "10年临床经验",
+      "specialties": ["儿童感冒", "儿童发育", "疫苗接种"]
+    },
+    "doc003": {
+      "name": "王强医生",
+      "title": "主治医师",
+      "department": "骨科",
+      "experience": "8年临床经验",
+      "specialties": ["骨折", "关节炎", "运动损伤"]
+    },
+    "doc004": {
+      "name": "刘敏医生",
+      "title": "主任医师",
+      "department": "妇产科",
+      "experience": "18年临床经验",
+      "specialties": ["孕期保健", "妇科炎症", "产后恢复"]
+    },
+    "doc005": {
+      "name": "陈杰医生",
+      "title": "副主任医师",
+      "department": "消化内科",
+      "experience": "12年临床经验",
+      "specialties": ["胃炎", "肠道疾病", "肝病"]
+    }
+  },
+  "language": {
+    "label": "语言",
+    "zhCN": "中文",
+    "enUS": "English"
+  }
+}

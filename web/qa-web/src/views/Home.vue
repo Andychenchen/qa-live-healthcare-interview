@@ -2,28 +2,28 @@
   <div class="home">
     <section class="hero">
       <div class="hero-content">
-        <h1>专业在线医疗问诊平台</h1>
-        <p class="hero-subtitle">连接专业医生与患者,提供便捷、高效的医疗咨询服务</p>
+        <h1>{{ t('home.hero.title') }}</h1>
+        <p class="hero-subtitle">{{ t('home.hero.subtitle') }}</p>
         <div class="hero-features">
           <div class="feature-item">
             <CheckCircleOutlined class="feature-icon" />
-            <span>专业医生团队</span>
+            <span>{{ t('home.hero.features.doctorTeam') }}</span>
           </div>
           <div class="feature-item">
             <CheckCircleOutlined class="feature-icon" />
-            <span>实时在线问诊</span>
+            <span>{{ t('home.hero.features.onlineConsultation') }}</span>
           </div>
           <div class="feature-item">
             <CheckCircleOutlined class="feature-icon" />
-            <span>隐私安全保护</span>
+            <span>{{ t('home.hero.features.privacyProtection') }}</span>
           </div>
         </div>
         <div class="hero-actions">
           <a-button type="primary" size="large" @click="navigateTo('/consultation')">
-            立即问诊
+            {{ t('home.hero.actions.startConsultation') }}
           </a-button>
           <a-button size="large" @click="navigateTo('/doctors')">
-            查看医生
+            {{ t('home.hero.actions.viewDoctors') }}
           </a-button>
         </div>
       </div>
@@ -38,8 +38,11 @@
           <TeamOutlined />
         </div>
         <div class="stat-info">
-          <h3>{{ statistics.totalDoctors }}</h3>
-          <p>专业医生</p>
+          <h3>
+            <span v-if="doctorsLoading">--</span>
+            <span v-else>{{ statistics.totalDoctors }}</span>
+          </h3>
+          <p>{{ t('home.statistics.totalDoctors') }}</p>
         </div>
       </div>
       <div class="stat-card">
@@ -48,7 +51,7 @@
         </div>
         <div class="stat-info">
           <h3>{{ statistics.totalQuestions }}</h3>
-          <p>问题总数</p>
+          <p>{{ t('home.statistics.totalQuestions') }}</p>
         </div>
       </div>
       <div class="stat-card">
@@ -57,7 +60,7 @@
         </div>
         <div class="stat-info">
           <h3>{{ statistics.activeSessions }}</h3>
-          <p>待响应问题</p>
+          <p>{{ t('home.statistics.pendingQuestions') }}</p>
         </div>
       </div>
       <div class="stat-card">
@@ -65,49 +68,61 @@
           <UserOutlined />
         </div>
         <div class="stat-info">
-          <h3>{{ statistics.totalSessions }}</h3>
-          <p>在线诊室</p>
+          <h3>
+            <span v-if="doctorsLoading">--</span>
+            <span v-else>{{ statistics.totalSessions }}</span>
+          </h3>
+          <p>{{ t('home.statistics.onlineRooms') }}</p>
         </div>
       </div>
     </section>
 
     <section class="active-rooms">
-      <h2>开放诊室</h2>
-      <p class="section-subtitle">以下医生诊室正在开放,欢迎咨询</p>
-      <div class="rooms-grid">
-        <div
-          v-for="doctor in activeDoctors"
-          :key="doctor.id"
-          class="room-card"
-          @click="navigateTo(`/consultation/${doctor.username}`)"
-        >
-          <div class="room-header">
-            <img :src="doctor.avatar" :alt="doctor.name" class="doctor-avatar" />
-            <a-badge status="processing" text="在线" />
-          </div>
-          <div class="room-body">
-            <h3>{{ doctor.name }}</h3>
-            <p class="doctor-title">{{ doctor.title }} · {{ doctor.department }}</p>
-            <p class="doctor-experience">{{ doctor.experience }}</p>
-            <div class="doctor-specialties">
-              <a-tag v-for="specialty in doctor.specialties" :key="specialty" color="blue">
-                {{ specialty }}
-              </a-tag>
+      <h2>{{ t('home.activeRooms.title') }}</h2>
+      <p class="section-subtitle">{{ t('home.activeRooms.subtitle') }}</p>
+      <AsyncState
+        :loading="doctorsLoading"
+        :error="doctorsError"
+        loading-text="正在加载开放诊室..."
+        @retry="retryLoad"
+      >
+        <div class="rooms-grid">
+          <div
+            v-for="doctor in activeDoctors"
+            :key="doctor.id"
+            class="room-card"
+            @click="navigateTo(`/consultation/${doctor.username}`)"
+          >
+            <div class="room-header">
+              <img :src="doctor.avatar" :alt="doctor.name" class="doctor-avatar" />
+              <a-badge status="processing" :text="t('home.activeRooms.online')" />
+            </div>
+            <div class="room-body">
+              <h3>{{ doctor.name }}</h3>
+              <p class="doctor-title">{{ doctor.title }} · {{ doctor.department }}</p>
+              <p class="doctor-experience">{{ doctor.experience }}</p>
+              <div class="doctor-specialties">
+                <a-tag v-for="specialty in doctor.specialties" :key="specialty" color="blue">
+                  {{ specialty }}
+                </a-tag>
+              </div>
+            </div>
+            <div class="room-footer">
+              <a-button type="primary" block>{{ t('home.activeRooms.enterRoom') }}</a-button>
             </div>
           </div>
-          <div class="room-footer">
-            <a-button type="primary" block>进入诊室</a-button>
-          </div>
         </div>
-      </div>
+      </AsyncState>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useRouter } from 'vue-router';
-import { store } from '../store';
+import { useI18n } from 'vue-i18n';
+import { store, doctorsLoading, doctorsError, type Doctor } from '../store';
+import AsyncState from '../components/AsyncState.vue';
 import {
   CheckCircleOutlined,
   TeamOutlined,
@@ -117,9 +132,38 @@ import {
 } from '@ant-design/icons-vue';
 
 const router = useRouter();
+const { t, te } = useI18n();
 
 const statistics = computed(() => store.getStatistics());
-const activeDoctors = computed(() => store.getActiveDoctors());
+
+/** 医生信息取自本地语言包；缺失时回落到 store 中的原始中文数据 */
+const localizeDoctor = (doctor: Doctor) => {
+  const key = `doctors.${doctor.id}`;
+  if (!te(`${key}.name`)) {
+    return doctor;
+  }
+  const specialties = doctor.specialties.map((_, index) =>
+    te(`${key}.specialties.${index}`) ? t(`${key}.specialties.${index}`) : doctor.specialties[index]
+  );
+  return {
+    ...doctor,
+    name: t(`${key}.name`),
+    title: t(`${key}.title`),
+    department: t(`${key}.department`),
+    experience: t(`${key}.experience`),
+    specialties,
+  };
+};
+
+const activeDoctors = computed(() => store.getActiveDoctors().map(localizeDoctor));
+
+const retryLoad = async () => {
+  await store.loadDoctors(true);
+};
+
+onMounted(() => {
+  store.loadDoctors();
+});
 
 const navigateTo = (path: string) => {
   router.push(path);

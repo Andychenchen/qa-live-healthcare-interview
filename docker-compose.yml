@@ -1,0 +1,62 @@
+# QA Live Healthcare - 本地数据库环境
+# 启动：docker compose up -d
+# MySQL:        localhost:3306  库 qa_live  root/root
+# phpMyAdmin:   http://localhost:8081
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: qa-live-mysql
+    restart: unless-stopped
+    environment:
+      # root 密码
+      MYSQL_ROOT_PASSWORD: root
+      # 允许 root 从宿主机（非 localhost）连接
+      MYSQL_ROOT_HOST: '%'
+      # 容器启动时自动创建数据库 qa_live
+      MYSQL_DATABASE: qa_live
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      # 数据卷持久化，容器删除后数据仍保留
+      - mysql-data:/var/lib/mysql
+      # 初始化脚本（首次启动时执行）
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d:ro
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - qa-live-net
+
+  phpmyadmin:
+    image: phpmyadmin:latest
+    container_name: qa-live-phpmyadmin
+    restart: unless-stopped
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: "3306"
+      PMA_USER: root
+      PMA_PASSWORD: root
+      TZ: Asia/Shanghai
+    ports:
+      - "8081:80"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    networks:
+      - qa-live-net
+
+volumes:
+  mysql-data:
+    driver: local
+
+networks:
+  qa-live-net:
+    driver: bridge
