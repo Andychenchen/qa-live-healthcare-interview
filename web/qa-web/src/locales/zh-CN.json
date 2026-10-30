@@ -1,0 +1,99 @@
+{
+  "home": {
+    "hero": {
+      "title": "专业在线医疗问诊平台",
+      "subtitle": "连接专业医生与患者,提供便捷、高效的医疗咨询服务",
+      "features": {
+        "doctorTeam": "专业医生团队",
+        "onlineConsultation": "实时在线问诊",
+        "privacyProtection": "隐私安全保护"
+      },
+      "actions": {
+        "startConsultation": "立即问诊",
+        "viewDoctors": "查看医生"
+      }
+    },
+    "statistics": {
+      "totalDoctors": "专业医生",
+      "totalQuestions": "问题总数",
+      "pendingQuestions": "待响应问题",
+      "onlineRooms": "在线诊室"
+    },
+    "activeRooms": {
+      "title": "开放诊室",
+      "subtitle": "以下医生诊室正在开放,欢迎咨询",
+      "online": "在线",
+      "enterRoom": "进入诊室"
+    }
+  },
+  "doctors": {
+    "doc001": {
+      "name": "张伟医生",
+      "title": "主任医师",
+      "department": "心内科",
+      "experience": "15年临床经验",
+      "specialties": ["高血压", "冠心病", "心律失常"]
+    },
+    "doc002": {
+      "name": "李娜医生",
+      "title": "副主任医师",
+      "department": "儿科",
+      "experience": "10年临床经验",
+      "specialties": ["儿童感冒", "儿童发育", "疫苗接种"]
+    },
+    "doc003": {
+      "name": "王强医生",
+      "title": "主治医师",
+      "department": "骨科",
+      "experience": "8年临床经验",
+      "specialties": ["骨折", "关节炎", "运动损伤"]
+    },
+    "doc004": {
+      "name": "刘敏医生",
+      "title": "主任医师",
+      "department": "妇产科",
+      "experience": "18年临床经验",
+      "specialties": ["孕期保健", "妇科炎症", "产后恢复"]
+    },
+    "doc005": {
+      "name": "陈杰医生",
+      "title": "副主任医师",
+      "department": "消化内科",
+      "experience": "12年临床经验",
+      "specialties": ["胃炎", "肠道疾病", "肝病"]
+    }
+  },
+  "patient": {
+    "auth": {
+      "title": "患者身份验证",
+      "subtitle": "请使用用户名和密码登录后开始问诊",
+      "loginTab": "登录",
+      "registerTab": "注册",
+      "loginButton": "登录",
+      "registerButton": "注册并登录",
+      "loginSuccess": "登录成功，欢迎回来!",
+      "registerSuccess": "注册成功，已为您自动登录",
+      "logout": "退出登录",
+      "logoutSuccess": "已退出登录",
+      "hintTitle": "提示",
+      "hintDescription": "首次使用请先注册账号；注册成功后即可提交问诊问题。"
+    },
+    "portal": {
+      "welcome": "欢迎使用在线问诊服务"
+    },
+    "validation": {
+      "usernameRequired": "请输入用户名",
+      "usernamePattern": "用户名需为 4-32 位，仅支持字母、数字、下划线和连字符",
+      "passwordRequired": "请输入密码",
+      "passwordPattern": "密码需为 8-32 位，且必须同时包含字母和数字",
+      "nameRequired": "请输入姓名",
+      "nameMax": "姓名不能超过 32 个字符",
+      "phonePattern": "请输入有效的手机号"
+    }
+  },
+  "language": {
+    "label": "语言",
+    "zhCN": "中文",
+    "enUS": "English"
+  }
+}

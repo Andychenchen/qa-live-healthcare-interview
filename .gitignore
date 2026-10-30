@@ -1,0 +1,38 @@
+# ---- Java / Maven ----
+target/
+*.class
+*.jar
+!.mvn/wrapper/maven-wrapper.jar
+hs_err_pid*
+replay_pid*
+
+# ---- 前端构建产物 ----
+node_modules/
+dist/
+dist-ssr/
+.vite/
+coverage/
+*.tsbuildinfo
+
+# ---- 本地环境与密钥 ----
+.env.local
+.env.*.local
+*.local
+!.env.example
+
+# ---- IDE / 编辑器 ----
+.idea/
+*.iml
+*.ipr
+*.iws
+.settings/
+.classpath
+.project
+*.swp
+
+# ---- 系统与临时文件 ----
+.DS_Store
+Thumbs.db
+*.log
+*.tmp
+tmp/

@@ -3,17 +3,107 @@
     <div class="consultation-container">
       <div v-if="!currentPatient" class="auth-section">
         <div class="auth-card">
-          <h1>患者身份验证</h1>
-          <p>请输入您的姓名和生日以验证身份</p>
+          <h1>{{ t('patient.auth.title') }}</h1>
+          <p>{{ t('patient.auth.subtitle') }}</p>
+
+          <div class="auth-tabs">
+            <a-button
+              type="primary"
+              :class="{ 'auth-tab-active': authMode === 'login' }"
+              @click="switchAuthMode('login')"
+            >
+              {{ t('patient.auth.loginTab') }}
+            </a-button>
+            <a-button
+              :class="{ 'auth-tab-active': authMode === 'register' }"
+              @click="switchAuthMode('register')"
+            >
+              {{ t('patient.auth.registerTab') }}
+            </a-button>
+          </div>
+
+          <!-- 登录表单 -->
           <a-form
-            :model="authForm"
-            :rules="authRules"
-            @finish="verifyPatient"
+            v-if="authMode === 'login'"
+            :model="loginForm"
+            :rules="loginRules"
+            @finish="onLogin"
             layout="vertical"
+            class="login-form"
           >
+            <a-form-item label="用户名" name="username">
+              <a-input
+                v-model:value="loginForm.username"
+                size="large"
+                placeholder="请输入用户名"
+              >
+                <template #prefix>
+                  <UserOutlined />
+                </template>
+              </a-input>
+            </a-form-item>
+
+            <a-form-item label="密码" name="password">
+              <a-input-password
+                v-model:value="loginForm.password"
+                size="large"
+                placeholder="请输入密码"
+              >
+                <template #prefix>
+                  <LockOutlined />
+                </template>
+              </a-input-password>
+            </a-form-item>
+
+            <a-form-item>
+              <a-button
+                type="primary"
+                html-type="submit"
+                size="large"
+                block
+                :loading="patientAuthLoading"
+              >
+                {{ t('patient.auth.loginButton') }}
+              </a-button>
+            </a-form-item>
+          </a-form>
+
+          <!-- 注册表单 -->
+          <a-form
+            v-else
+            :model="registerForm"
+            :rules="registerRules"
+            @finish="onRegister"
+            layout="vertical"
+            class="login-form"
+          >
+            <a-form-item label="用户名" name="username">
+              <a-input
+                v-model:value="registerForm.username"
+                size="large"
+                placeholder="4-32 位，字母、数字、下划线或连字符"
+              >
+                <template #prefix>
+                  <UserOutlined />
+                </template>
+              </a-input>
+            </a-form-item>
+
+            <a-form-item label="密码" name="password">
+              <a-input-password
+                v-model:value="registerForm.password"
+                size="large"
+                placeholder="8-32 位，需同时包含字母和数字"
+              >
+                <template #prefix>
+                  <LockOutlined />
+                </template>
+              </a-input-password>
+            </a-form-item>
+
             <a-form-item label="姓名" name="name">
               <a-input
-                v-model:value="authForm.name"
+                v-model:value="registerForm.name"
                 size="large"
                 placeholder="请输入您的姓名"
               >
@@ -23,26 +113,55 @@
               </a-input>
             </a-form-item>
 
-            <a-form-item label="生日" name="birthday">
-              <a-date-picker
-                v-model:value="authForm.birthday"
+            <a-form-item label="手机号" name="phone">
+              <a-input
+                v-model:value="registerForm.phone"
                 size="large"
-                format="YYYY-MM-DD"
-                placeholder="请选择您的生日"
-                style="width: 100%"
-              />
+                placeholder="选填"
+              >
+                <template #prefix>
+                  <PhoneOutlined />
+                </template>
+              </a-input>
+            </a-form-item>
+
+            <a-form-item label="性别" name="gender">
+              <a-select
+                v-model:value="registerForm.gender"
+                size="large"
+                placeholder="选填"
+                allow-clear
+              >
+                <a-select-option value="男">男</a-select-option>
+                <a-select-option value="女">女</a-select-option>
+                <a-select-option value="其他">其他</a-select-option>
+              </a-select>
             </a-form-item>
 
             <a-form-item>
-              <a-button type="primary" html-type="submit" size="large" block>
-                验证身份
+              <a-button
+                type="primary"
+                html-type="submit"
+                size="large"
+                block
+                :loading="patientAuthLoading"
+              >
+                {{ t('patient.auth.registerButton') }}
               </a-button>
             </a-form-item>
           </a-form>
 
           <a-alert
-            message="提示"
-            description="输入任意姓名和生日即可使用。首次输入会自动创建账户,再次输入相同信息即可登录。"
+            v-if="patientAuthError"
+            :message="patientAuthError"
+            type="error"
+            show-icon
+            class="auth-error"
+          />
+
+          <a-alert
+            :message="t('patient.auth.hintTitle')"
+            :description="t('patient.auth.hintDescription')"
             type="info"
             show-icon
           />
@@ -55,13 +174,13 @@
             <UserOutlined class="patient-icon-large" />
             <div>
               <h1>{{ currentPatient.name }} 的问诊</h1>
-              <p>欢迎使用在线问诊服务</p>
+              <p>{{ t('patient.portal.welcome') }}</p>
             </div>
           </div>
           <div class="portal-actions">
             <a-button @click="logoutPatient">
               <LogoutOutlined />
-              切换用户
+              {{ t('patient.auth.logout') }}
             </a-button>
           </div>
         </div>
@@ -165,16 +284,20 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
+import { useI18n } from 'vue-i18n';
 import { message } from 'ant-design-vue';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import {
   UserOutlined,
+  LockOutlined,
+  PhoneOutlined,
   LogoutOutlined,
   PlusOutlined
 } from '@ant-design/icons-vue';
-import { store, Doctor } from '../store';
+import { store, patientAuthLoading, patientAuthError, type Doctor } from '../store';
 
 const route = useRoute();
+const { t } = useI18n();
 
 const currentPatient = computed(() => store.state.currentPatient);
 const myQuestions = computed(() =>
@@ -185,14 +308,52 @@ const myQuestions = computed(() =>
 
 const selectedDoctor = ref<Doctor | null>(null);
 
-const authForm = reactive({
-  name: '',
-  birthday: null as Dayjs | null,
+/** 认证模式：登录 / 注册 */
+const authMode = ref<'login' | 'register'>('login');
+
+const loginForm = reactive({
+  username: '',
+  password: '',
 });
 
-const authRules = {
-  name: [{ required: true, message: '请输入姓名' }],
-  birthday: [{ required: true, message: '请选择生日' }],
+const registerForm = reactive({
+  username: '',
+  password: '',
+  name: '',
+  phone: '',
+  gender: undefined as string | undefined,
+});
+
+/** 与后端 PatientValidator 保持一致的校验规则（PRD V-01 ~ V-06） */
+const usernameRules = [
+  { required: true, message: t('patient.validation.usernameRequired') },
+  {
+    pattern: /^[A-Za-z0-9_-]{4,32}$/,
+    message: t('patient.validation.usernamePattern'),
+  },
+];
+
+const passwordRules = [
+  { required: true, message: t('patient.validation.passwordRequired') },
+  {
+    pattern: /^(?=.*[A-Za-z])(?=.*\d)[\S]{8,32}$/,
+    message: t('patient.validation.passwordPattern'),
+  },
+];
+
+const loginRules = {
+  username: usernameRules,
+  password: passwordRules,
+};
+
+const registerRules = {
+  username: usernameRules,
+  password: passwordRules,
+  name: [
+    { required: true, message: t('patient.validation.nameRequired') },
+    { max: 32, message: t('patient.validation.nameMax') },
+  ],
+  phone: [{ pattern: /^1[3-9]\d{9}$/, message: t('patient.validation.phonePattern') }],
 };
 
 const submitModalVisible = ref(false);
@@ -210,6 +371,12 @@ const availableDoctors = computed(() => {
 });
 
 onMounted(() => {
+  // 医生数据来自后端，需先加载
+  store.loadDoctors();
+
+  // 恢复登录态（刷新页面后保持登录，PRD REQ-006）
+  store.restoreSession();
+
   const doctorUsername = route.params.doctorUsername as string;
   if (doctorUsername) {
     const doctor = store.getDoctorByUsername(doctorUsername);
@@ -220,30 +387,36 @@ onMounted(() => {
   }
 });
 
-const verifyPatient = () => {
-  const birthday = authForm.birthday?.format('YYYY-MM-DD');
-  if (!birthday) {
-    message.error('请选择生日');
-    return;
-  }
+const switchAuthMode = (mode: 'login' | 'register') => {
+  authMode.value = mode;
+};
 
-  const existingPatientCount = store.state.patients.filter(
-    p => p.name === authForm.name && p.birthday === birthday
-  ).length;
-
-  store.verifyPatient(authForm.name, birthday);
-
-  if (existingPatientCount > 0) {
-    message.success('验证成功,欢迎回来!');
-  } else {
-    message.success('首次登录,已为您创建账户!');
+const onLogin = async () => {
+  const patient = await store.loginPatient(loginForm.username, loginForm.password);
+  if (patient) {
+    message.success(t('patient.auth.loginSuccess'));
+    loginForm.password = '';
   }
 };
 
-const logoutPatient = () => {
-  store.logoutPatient();
+const onRegister = async () => {
+  const patient = await store.registerPatient({
+    username: registerForm.username,
+    password: registerForm.password,
+    name: registerForm.name,
+    phone: registerForm.phone || undefined,
+    gender: registerForm.gender,
+  });
+  if (patient) {
+    message.success(t('patient.auth.registerSuccess'));
+    registerForm.password = '';
+  }
+};
+
+const logoutPatient = async () => {
+  await store.logoutPatient();
   selectedDoctor.value = null;
-  message.success('已切换用户');
+  message.success(t('patient.auth.logoutSuccess'));
 };
 
 const clearSelectedDoctor = () => {
@@ -330,6 +503,32 @@ const formatTime = (time: string) => {
   width: 100%;
   max-width: 450px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.auth-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.auth-tabs .ant-btn {
+  flex: 1;
+  height: 40px;
+  border-radius: 8px;
+  font-weight: 500;
+  color: #666;
+  background: #f5f5f5;
+  border-color: #f5f5f5;
+}
+
+.auth-tabs .ant-btn.auth-tab-active {
+  color: #fff;
+  background: #667eea;
+  border-color: #667eea;
+}
+
+.auth-error {
+  margin-bottom: 16px;
 }
 
 .auth-card h1 {
